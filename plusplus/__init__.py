@@ -9,6 +9,12 @@ __version__ = '1.0'
 
 
 def enable_increments(func):
+    if isinstance(func, type):
+        raise ValueError(
+            "Decorating classes is not supported. To decorate all class methods and "
+            "the class body automatically, move the class definition into a function "
+            "decorated with @enable_increments")
+
     bytecode = Bytecode.from_code(func.__code__)
     new_bytecode = []
 
@@ -25,8 +31,8 @@ def enable_increments(func):
 
     bytecode.clear()
     bytecode.extend(new_bytecode)
-    return FunctionType(bytecode.to_code(),
-                        func.__globals__, func.__name__, func.__defaults__, func.__closure__)
+    func.__code__ = bytecode.to_code()
+    return func
 
 
 _Patch = namedtuple('_Patch', ['n_removed', 'added'])

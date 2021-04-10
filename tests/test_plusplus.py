@@ -116,26 +116,35 @@ def test_attributes():
     assert ++ClassWithOneField(20).field == 21
 
 
-class ClassWithIncrementingMethods:
-    def __init__(self, value):
-        self.field = value
+@enable_increments
+def make_incrementer():
+    # To decorate all class methods and the class body automatically, move the class definition
+    # into a function decorated with @enable_increments
 
-    @enable_increments
-    def increment_field(self):
-        ++self.field
+    class Incrementer:
+        def __init__(self, value):
+            self.field = value
 
-    @enable_increments
-    def increment_field_and_return(self):
-        return ++self.field
+        def increment_field(self):
+            ++self.field
 
-    @staticmethod
-    @enable_increments  # Must be the last decorator
-    def increment_and_return(x):
-        return ++x
+        def increment_field_and_return(self):
+            return ++self.field
+
+        @staticmethod
+        def increment_and_return(x):
+            return ++x
+
+        CONSTANT = 777
+        ++CONSTANT
+
+    return Incrementer
+
+Incrementer = make_incrementer()
 
 
-def test_decorated_methods():
-    obj = ClassWithIncrementingMethods(10)
+def test_nested_class():
+    obj = Incrementer(10)
 
     obj.increment_field()
     assert obj.field == 11
@@ -143,7 +152,17 @@ def test_decorated_methods():
     assert obj.increment_field_and_return() == 12
     assert obj.field == 12
 
-    assert ClassWithIncrementingMethods.increment_and_return(42) == 43
+    assert Incrementer.increment_and_return(42) == 43
+
+    assert Incrementer.CONSTANT == 778
+
+
+def test_decorated_class():
+    with pytest.raises(ValueError):
+        @enable_increments
+        class DecoratedClass:
+            def method(self, x):
+                return ++x
 
 
 def test_syntax_errors():
@@ -169,6 +188,8 @@ def test_expected_ops_are_used():
 
         'LOAD_ATTR': [test_attributes],
         'BINARY_SUBSCR': [test_subscriptions, test_subscription_expressions],
+
+        'MAKE_FUNCTION': [test_closures, test_lambdas, make_incrementer],
     }
 
     for op, tests in tested_ops.items():
@@ -177,7 +198,3 @@ def test_expected_ops_are_used():
                        for item in Bytecode.from_code(test_func.__code__)
                        if isinstance(item, Instr)), \
                 '{} expected to have {}'.format(test_func.__name__, op)
-
-
-# TODO:
-# - Patch functions inside functions and classes
