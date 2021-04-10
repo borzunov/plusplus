@@ -32,8 +32,7 @@ global_var = 777
 def test_globals():
     before = global_var
 
-    # Unlike `global_var += 1` statement,
-    # declaring `global global_var` is not necessary
+    # No need to declare `global global_var` (contrary to the `global_var += 1` statement)
     ++global_var
     assert global_var == before + 1
 
@@ -45,10 +44,10 @@ def test_globals():
 def test_closures():
     free_var = 123
 
-    @enable_increments
+    # No need to specify @enable_increments for nested functions
+
     def closure():
-        # Unlike `free_var += 1` statement,
-        # declaring `nonlocal free_var` is not necessary
+        # No need to declare `nonlocal free_var` (contrary to the `free_var += 1` statement)
         ++free_var
         return ++free_var
 
@@ -64,10 +63,12 @@ def test_closures():
 def test_lambdas():
     free_var = 123
 
-    pure = enable_increments(lambda x: ++x)
+    # No need to call enable_increments() for nested lambdas
+
+    pure = lambda x: ++x
     assert pure(42) == 43
 
-    closure = enable_increments(lambda: ++free_var)
+    closure = lambda: ++free_var
     assert closure() == 124
     assert free_var == 124
 

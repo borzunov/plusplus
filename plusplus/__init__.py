@@ -16,6 +16,8 @@ def enable_increments(func):
     while index < len(bytecode):
         patch = _patch_increment(bytecode[index:index + 7], func)
         if patch is None:
+            patch = _patch_make_function(bytecode[index:index + 1])
+        if patch is None:
             patch = _Patch(n_removed=1, added=[bytecode[index]])
 
         index += patch.n_removed
@@ -47,8 +49,8 @@ def _patch_increment(region, func):
             region[1].name in UNARY_TO_INPLACE_OP and
             region[1].name == region[2].name):
         return None
-
     load_instr, unary_instr = region[:2]
+
     if load_instr.name not in LOAD_TO_STORE_OP:
         raise _make_syntax_error('Increment/decrement may be applied only to a variable, '
                                  'a subscriptable item, or an attribute', load_instr.lineno, func)
@@ -67,6 +69,21 @@ def _patch_increment(region, func):
     repl.append(Instr(store_op, load_instr.arg))
 
     return _Patch(n_removed=n_removed, added=repl)
+
+
+def _patch_make_function(region):
+    if not (isinstance(region[0], Instr) and
+            region[0].name == 'MAKE_FUNCTION'):
+        return None
+    make_function_instr = region[0]
+
+    repl = [
+        make_function_instr,
+        Instr('LOAD_CONST', enable_increments),
+        Instr('ROT_TWO'),
+        Instr('CALL_FUNCTION', 1),
+    ]
+    return _Patch(n_removed=1, added=repl)
 
 
 def _make_syntax_error(message, lineno, func):
