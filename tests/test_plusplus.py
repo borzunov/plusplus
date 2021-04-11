@@ -1,5 +1,4 @@
 import pytest
-
 from bytecode import Bytecode, Instr
 
 from plusplus import enable_increments
@@ -7,17 +6,18 @@ from plusplus import enable_increments
 
 @enable_increments
 def test_locals():
-    x = y = 42
+    x = 42
+    y = 42.0
 
     # In separate operations
     ++x
     assert x == 43
     --y
-    assert y == 41
+    assert y == 41.0
 
     # In the `assert` expression
     assert ++x == 44
-    assert --y == 40
+    assert --y == 40.0
 
     # In the separate expression
     expression = (++x) * 2
@@ -137,8 +137,8 @@ def test_generators():
 
 @enable_increments
 def make_incrementer():
-    # To decorate all class methods and the class body automatically, move the class definition
-    # into a function decorated with @enable_increments
+    # To decorate a whole class, define the class inside a decorated function or
+    # decorate the whole package
 
     class Incrementer:
         def __init__(self, value):
@@ -176,12 +176,22 @@ def test_nested_class():
     assert Incrementer.CONSTANT == 778
 
 
-def test_decorated_class():
-    with pytest.raises(ValueError):
+def test_package():
+    from package_with_increments import CONSTANT, increment_and_return
+
+    assert increment_and_return(42) == 43
+    assert CONSTANT == 778
+
+
+def test_type_errors():
+    with pytest.raises(TypeError):
         @enable_increments
         class DecoratedClass:
             def method(self, x):
                 return ++x
+
+    with pytest.raises(TypeError):
+        enable_increments(777)
 
 
 def test_syntax_errors():
