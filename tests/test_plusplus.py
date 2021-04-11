@@ -117,6 +117,25 @@ def test_attributes():
 
 
 @enable_increments
+def test_list_comprehensions():
+    j = 0
+    assert [++j for _ in range(10)] == list(range(1, 11))
+
+
+@enable_increments
+def test_generators():
+    def generator():
+        i = 0
+        for _ in range(10):
+            yield ++i
+
+    assert list(generator()) == list(range(1, 11))
+
+    j = 0
+    assert list(++j for _ in range(10)) == list(range(1, 11))
+
+
+@enable_increments
 def make_incrementer():
     # To decorate all class methods and the class body automatically, move the class definition
     # into a function decorated with @enable_increments
@@ -189,7 +208,7 @@ def test_expected_ops_are_used():
         'LOAD_ATTR': [test_attributes],
         'BINARY_SUBSCR': [test_subscriptions, test_subscription_expressions],
 
-        'MAKE_FUNCTION': [test_closures, test_lambdas, make_incrementer],
+        'MAKE_FUNCTION': [test_closures, test_lambdas, test_generators, make_incrementer],
     }
 
     for op, tests in tested_ops.items():
