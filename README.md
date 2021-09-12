@@ -21,7 +21,8 @@ Increments and decrements of collection items and object attributes are supporte
 
 ```python
 dictionary = {'key': 42}
-++dictionary['key']  # Makes it 43
+++dictionary['key']
+assert dictionary['key'] == 43
 ```
 
 Unlike `x += 1`, `++x` is still an expression, so the increments work fine inside other expressions,
