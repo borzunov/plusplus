@@ -1,6 +1,10 @@
 plusplus
 ========
 
+[![PyPI version](https://img.shields.io/pypi/v/plusplus.svg)](https://pypi.org/project/hivemind/)
+[![CI status](https://github.com/borzunov/plusplus/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/borzunov/plusplus/actions)
+![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus)
+
 Enable the `++x` and `--x` expressions in Python
 
 What's this?
