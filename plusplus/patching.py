@@ -122,8 +122,6 @@ PRE_LOAD_HOOK = {
     'BINARY_SUBSCR': [
         # Stack: [..., arr, idx] -> [..., (arr, idx), arr, idx]
         Instr('DUP_TOP_TWO'),
-        Instr('BUILD_TUPLE', 2),
-        Instr('ROT_THREE'),
     ],
 }
 
@@ -135,9 +133,8 @@ PRE_STORE_HOOK = {
     ],
     'STORE_SUBSCR': [
         # Stack: [..., (arr, idx), value, value] -> [..., value, value, arr, idx]
-        Instr('ROT_THREE'),
-        Instr('ROT_THREE'),
-        Instr('UNPACK_SEQUENCE', 2),
+        Instr('BUILD_TUPLE', 4),
+        Instr('UNPACK_SEQUENCE', 4),
         Instr('ROT_TWO'),
     ],
 }
