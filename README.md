@@ -1,8 +1,8 @@
 plusplus
 ========
 
-[![PyPI version](https://img.shields.io/pypi/v/plusplus.svg)](https://pypi.org/project/hivemind/)
-[![CI status](https://github.com/borzunov/plusplus/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/borzunov/plusplus/actions)
+[![PyPI version](https://img.shields.io/pypi/v/plusplus.svg?color=blue)](https://pypi.org/project/hivemind/)
+[![CI status](https://img.shields.io/github/workflow/status/borzunov/plusplus/Tests)](https://github.com/borzunov/plusplus/actions)
 ![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus)
 
 Enable the `++x` and `--x` expressions in Python
@@ -44,8 +44,8 @@ Why?
 ----
 
 This module is made for fun, as a demonstration of Python flexibility.
-I agree that enabling increments in real projects may be risky: the code may become less readable,
-confuse new developers, and behave differently in new environments without this module.
+I agree that enabling increments in real projects may be risky: the code may confuse new developers and
+behave differently if copied to environments without this module.
 
 However, there are a few situations where increments make code simpler and more readable.
 To demonstrate them, I list a number of real code snippets from the Python standard library
