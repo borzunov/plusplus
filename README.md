@@ -3,7 +3,7 @@ plusplus
 
 [![PyPI version](https://img.shields.io/pypi/v/plusplus.svg?color=blue)](https://pypi.org/project/hivemind/)
 [![CI status](https://img.shields.io/github/workflow/status/borzunov/plusplus/Tests)](https://github.com/borzunov/plusplus/actions)
-![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus)
+![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus?token=SCAU424JFE)
 
 Enable the `++x` and `--x` expressions in Python
 
