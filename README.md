@@ -100,7 +100,7 @@ The first one replaces the top N items of the stack with a tuple made of these N
 putting the values on the stack right-to-left, i.e. _in reverse order_. We use them to reverse the top 4 items,
 then swap the top two to achieve the desired order.
 
-[[Source code](plusplus/patching.py)]
+[[Source code](src/plusplus/patching.py)]
 
 ### The @enable_increments decorator
 
@@ -112,7 +112,7 @@ for any nested bytecode objects (this way, the nested function and class definit
 The bytecode is disassembled and assembled back
 using the [MatthieuDartiailh/bytecode](https://github.com/MatthieuDartiailh/bytecode) library.
 
-[[Source code](plusplus/wrappers.py#L11)]
+[[Source code](src/plusplus/wrappers.py#L11)]
 
 ### Enabling increments in the whole package
 
@@ -125,7 +125,7 @@ as described above. To do this, we can create a new
 [MetaPathFinder](https://docs.python.org/3/library/importlib.html#importlib.abc.MetaPathFinder) and install it
 to [sys.meta_path](https://docs.python.org/3/library/sys.html#sys.meta_path).
 
-[[Source code](plusplus/wrappers.py#L27)]
+[[Source code](src/plusplus/wrappers.py#L27)]
 
 ### Why not just override unary plus operator?
 
@@ -147,7 +147,7 @@ In contrast, `plusplus` works with all built-in and user-defined types.
     We fix that by removing the code saving some of the intermediate results, which does not break
     the pytest introspection.
 
-    [[Source code](plusplus/patching.py#L87)]
+    [[Source code](src/plusplus/patching.py#L87)]
 
 How to use it?
 --------------
