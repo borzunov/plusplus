@@ -1,4 +1,4 @@
-import importlib
+import importlib.abc
 import sys
 from types import FunctionType
 
