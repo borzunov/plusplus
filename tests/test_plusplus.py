@@ -182,6 +182,12 @@ def test_package():
     assert increment_and_return(42) == 43
     assert CONSTANT == 778
 
+    with pytest.raises(ImportError):
+        from package_with_increments import unknown_unknowns
+
+    # Test that importing outside of the patched scope works after modifying sys.meta_path
+    import asyncio as _
+
 
 def test_type_errors():
     with pytest.raises(TypeError):
