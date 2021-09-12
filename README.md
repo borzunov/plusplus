@@ -21,11 +21,11 @@ Increments and decrements of collection items and object attributes are supporte
 
 ```python
 dictionary = {'key': 42}
-assert ++dictionary['key'] == 43
+++dictionary['key']  # Makes it 43
 ```
 
-Unlike `x += 1`, `++x` is still an expression, so it works fine inside other expressions, `if`/`while` conditions, and
-lambda functions:
+Unlike `x += 1`, `++x` is still an expression, so the increments work fine inside other expressions,
+`if`/`while` conditions, lambda functions, and list/dict comprehensions:
 
 ```python
 array[++index] = new_value
@@ -33,7 +33,10 @@ array[++index] = new_value
 if --connection.num_users == 0:
     connection.close()
 
-increment_and_return = lambda x: ++x
+button.add_click_callback(lambda: ++counter)
+
+index = 0
+indexed_cells = {++index: cell for row in table for cell in row}
 ```
 
 See [tests](tests/test_plusplus.py) for more sophisticated examples.
@@ -43,16 +46,17 @@ See [tests](tests/test_plusplus.py) for more sophisticated examples.
 Why?
 ----
 
-This module is made for fun, as a demonstration of Python flexibility.
-I agree that enabling increments in real projects may be risky: the code may confuse new developers and
-behave differently if copied to environments without this module.
+This module is made for fun, as a demonstration of Python flexibility and bytecode manipulation techniques.
+Note that enabling increments in real projects may be risky: such code may confuse new developers and
+behave differently if copied to environments without the `plusplus` module. Also, this feature gives more opportunities
+to write unreadable code in general.
 
-However, there are a few situations where increments make code simpler and more readable.
-To demonstrate them, I list a number of real code snippets from the Python standard library
-[here](docs/stdlib_examples.md) (instead of making up toy examples that may be unrealistic).
+Nevertheless, there are situations where increments (if used with care) may allow to avoid repetitions or
+make code more readable. Some of them are listed [here](docs/stdlib_examples.md) with the examples from
+the source code of the Python standard library.
 
 Also, having the increment expressions seems consistent with
-[PEP 572 "Assignment Expressions"](https://www.python.org/dev/peps/pep-0572/#the-importance-of-real-code)
+[PEP 572 "Assignment Expressions"](https://www.python.org/dev/peps/pep-0572/)
 that introduced the `x := value` expressions in Python 3.8+.
 They can be used inside `if`/`while` conditions and lambda functions as well.
 
