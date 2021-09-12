@@ -39,13 +39,13 @@ See [tests](tests/test_plusplus.py) for more sophisticated examples.
 Why?
 ----
 
-This module is made for fun, as a demonstration for Python flexibility.
-I agree that the outcome of allowing increments in real Python projects may vary, since this creates opportunities
-to write less readable code.
+This module is made for fun, as a demonstration of Python flexibility.
+I agree that enabling increments in real projects may be risky: the code may become less readable,
+confuse new developers, and behave differently in new environments without this module.
 
 However, there are a few situations where increments make code simpler and more readable.
-To demonstrate them, I refrain from making up toy code examples (it would be hard to say how realistic they are)
-but listing a number of real code snippets from the Python standard library [here](docs/stdlib_examples.md).
+To demonstrate them, I list a number of real code snippets from the Python standard library
+[here](docs/stdlib_examples.md) (instead of making up toy examples that may be unrealistic).
 
 Also, having the increment expressions seems consistent with
 [PEP 572 "Assignment Expressions"](https://www.python.org/dev/peps/pep-0572/#the-importance-of-real-code)
@@ -55,7 +55,7 @@ They can be used inside `if`/`while` conditions and lambda functions as well.
 How it works?
 -------------
 
-### Modifying bytecode
+### Patching bytecode
 
 Python compiles all source code to a low-level [bytecode](https://docs.python.org/3.7/library/dis.html)
 executed on the Python's stack-based virtual machine. Each bytecode instruction consumes a few items from the stack,
@@ -85,7 +85,7 @@ keeps an extra copy of the incremented value,
 so we can return it from the expression and assign it to the `value` variable.
 
 Arguably, the least clear part here is the second yellow box. Actually, it is only needed to reorder
-the top 4 items of the stack. If we need to reorder top 2 or 3 items of the stack, we can just use
+the top 4 items of the stack. If we need to reorder the top 2 or 3 items of the stack, we can just use
 the [`ROT_TWO`](https://docs.python.org/3.7/library/dis.html#opcode-ROT_TWO) and
 [`ROT_THREE`](https://docs.python.org/3.7/library/dis.html#opcode-ROT_THREE) instructions (they do a circular shift
 of the specified number of items of the stack). If we had a `ROT_FOUR` instruction, we would be able to just
@@ -96,13 +96,13 @@ However, `ROT_FOUR` was removed in Python 3.2
 recovered back only in Python 3.8. If we want to support Python 3.3 - 3.7, we need to use a workaround,
 e.g. the [`BUILD_TUPLE`](https://docs.python.org/3.7/library/dis.html#opcode-BUILD_TUPLE) and
 [`UNPACK_SEQUENCE`](https://docs.python.org/3.7/library/dis.html#opcode-UNPACK_SEQUENCE) instructions.
-The first one replaces top N items of the stack with a tuple made of these N items. The second unpacks the tuple
+The first one replaces the top N items of the stack with a tuple made of these N items. The second unpacks the tuple
 putting the values on the stack right-to-left, i.e. _in reverse order_. We use them to reverse the top 4 items,
 then swap the top two to achieve the desired order.
 
 [[Source code](plusplus/patching.py)]
 
-### The `@enable_increments` decorator
+### The @enable_increments decorator
 
 The first way to enable the increments is to use a decorator that would patch the bytecode of a given function.
 
@@ -116,7 +116,7 @@ using the [MatthieuDartiailh/bytecode](https://github.com/MatthieuDartiailh/byte
 
 ### Enabling increments in the whole package
 
-The Python import system allows to load modules not only from files but from any reasonable place
+The Python import system allows loading modules not only from files but from any reasonable place
 (e.g. there was a [module](https://github.com/drathier/stack-overflow-import) that enables importing code
 from Stack Overflow answers). The only thing you need is to provide module contents, including its bytecode.
 
@@ -133,7 +133,7 @@ Overriding operators via magic methods
 (such as [`__pos__()`](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
 [`__neg__()`](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
 do not work for built-in Python types like `int`, `float`, etc.
-In constrast, `plusplus` works with all built-in and user-defined types.
+In contrast, `plusplus` works with all built-in and user-defined types.
 
 ### Caveats
 
