@@ -58,13 +58,13 @@ How it works?
 ### Modifying bytecode
 
 Python compiles all source code to a low-level [bytecode](https://docs.python.org/3.7/library/dis.html)
-executed on the Python's stack-based virtual machine. Each bytecode operation consumes a few items from the stack,
+executed on the Python's stack-based virtual machine. Each bytecode instruction consumes a few items from the stack,
 does something with them, and pushes the results back to the stack.
 
 The `++x` expressions are compiled into two consecutive
-[UNARY_POSITIVE](https://docs.python.org/3.7/library/dis.html#opcode-UNARY_POSITIVE) operations
+[`UNARY_POSITIVE`](https://docs.python.org/3.7/library/dis.html#opcode-UNARY_POSITIVE) instructions
 that do not save the intermediate result in between (same with `--x` and two
-[UNARY_NEGATIVE](https://docs.python.org/3.7/library/dis.html#opcode-UNARY_NEGATIVE) operations).
+[`UNARY_NEGATIVE`](https://docs.python.org/3.7/library/dis.html#opcode-UNARY_NEGATIVE) instructions).
 No other expressions produce a similar bytecode pattern.
 
 `plusplus` replaces these patterns with the bytecode for `x += 1`, then adds the bytecode for storing
@@ -86,16 +86,16 @@ so we can return it from the expression and assign it to the `value` variable.
 
 Arguably, the least clear part here is the second yellow box. Actually, it is only needed to reorder
 the top 4 items of the stack. If we need to reorder top 2 or 3 items of the stack, we can just use
-the [ROT_TWO](https://docs.python.org/3.7/library/dis.html#opcode-ROT_TWO) and
-[ROT_THREE](https://docs.python.org/3.7/library/dis.html#opcode-ROT_THREE) operations (they do a circular shift
-of the specified number of items of the stack). If we had a `ROT_FOUR` operation, we would be able to just
+the [`ROT_TWO`](https://docs.python.org/3.7/library/dis.html#opcode-ROT_TWO) and
+[`ROT_THREE`](https://docs.python.org/3.7/library/dis.html#opcode-ROT_THREE) instructions (they do a circular shift
+of the specified number of items of the stack). If we had a `ROT_FOUR` instruction, we would be able to just
 replace the second yellow box with two `ROT_FOUR`s to achieve the desired order.
 
 However, `ROT_FOUR` was removed in Python 3.2
 (since it was [rarely used](https://bugs.python.org/issue929502) by the compiler) and
 recovered back only in Python 3.8. If we want to support Python 3.3 - 3.7, we need to use a workaround,
-e.g. the [BUILD_TUPLE](https://docs.python.org/3.7/library/dis.html#opcode-BUILD_TUPLE) and
-[UNPACK_SEQUENCE](https://docs.python.org/3.7/library/dis.html#opcode-UNPACK_SEQUENCE) instructions.
+e.g. the [`BUILD_TUPLE`](https://docs.python.org/3.7/library/dis.html#opcode-BUILD_TUPLE) and
+[`UNPACK_SEQUENCE`](https://docs.python.org/3.7/library/dis.html#opcode-UNPACK_SEQUENCE) instructions.
 The first one replaces top N items of the stack with a tuple made of these N items. The second unpacks the tuple
 putting the values on the stack right-to-left, i.e. _in reverse order_. We use them to reverse the top 4 items,
 then swap the top two to achieve the desired order.
@@ -130,14 +130,24 @@ to [sys.meta_path](https://docs.python.org/3/library/sys.html#sys.meta_path).
 ### Why not just override unary plus operator?
 
 Overriding operators via magic methods
-(such as [__pos__()](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
-[__neg__()](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
+(such as [`__pos__()`](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
+[`__neg__()`](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
 do not work for built-in Python types like `int`, `float`, etc.
 In constrast, `plusplus` works with all built-in and user-defined types.
 
 ### Caveats
 
-... pytest ...
+- `pytest` does its own bytecode modifications in tests, adding the code to save intermediate expression results
+    to the `assert` statements. This is necessary to show these results if the test fails
+    (see [pytest docs](https://docs.pytest.org/en/stable/assert.html#assertion-introspection-details)).
+
+    By default, this breaks the `plusplus` patcher because the two `UNARY_POSITIVE` instructions become
+    separated by the code saving the result of the first `UNARY_POSITIVE`.
+
+    We fix that by removing the code saving some of the intermediate results, which does not break
+    the pytest introspection.
+
+    [[Source code](plusplus/patching.py#L87)]
 
 How to use it?
 --------------
@@ -175,7 +185,7 @@ enable_increments(__name__)
 ...
 ```
 
-This enables increments in submodules, but not in the `package/__init__.py` code itself.
+This enables increments in the submodules, but not in the `package/__init__.py` code itself.
 
 See also
 --------
