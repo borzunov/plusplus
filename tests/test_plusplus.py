@@ -186,7 +186,7 @@ def test_package():
         from package_with_increments import unknown_unknowns
 
     # Test that importing outside of the patched scope works after modifying sys.meta_path
-    import asyncio as _
+    import imaplib as _
 
 
 def test_type_errors():
