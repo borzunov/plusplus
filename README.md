@@ -5,12 +5,12 @@ plusplus
 [![CI status](https://img.shields.io/github/workflow/status/borzunov/plusplus/Tests)](https://github.com/borzunov/plusplus/actions)
 ![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus?token=SCAU424JFE)
 
-Enable the `++x` and `--x` expressions in Python
+Enable `++x` and `--x` expressions in Python
 
 What's this?
 ------------
 
-By default, Python does not support neither pre-increments (like `++x`) nor post-increments (like `x++`).
+By default, Python supports neither pre-increments (like `++x`) nor post-increments (like `x++`).
 However, the first ones are _syntactically correct_ since Python parses them as two subsequent `+x` operations,
 where `+` is the [unary plus operator](https://docs.python.org/3/reference/datamodel.html#object.__pos__)
 (same with `--x` and the [unary minus](https://docs.python.org/3/reference/datamodel.html#object.__neg__)).
