@@ -138,11 +138,20 @@ to [sys.meta_path](https://docs.python.org/3/library/sys.html#sys.meta_path).
 
 ### Why not just override unary plus operator?
 
-Overriding operators via magic methods
-(such as [`__pos__()`](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
-[`__neg__()`](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
-do not work for built-in Python types like `int`, `float`, etc.
-In contrast, `plusplus` works with all built-in and user-defined types.
+- This way, it would be impossible to distinguish applying two unary operators consequently (like `++x`) from
+    applying them in separate places of a program (like in the snippet below).
+    It is important to not change behavior in the latter case.
+
+    ```python
+    x = -value
+    y = -x
+    ```
+
+- Overriding operators via magic methods
+    (such as [`__pos__()`](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
+    [`__neg__()`](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
+    do not work for built-in Python types like `int`, `float`, etc.
+    In contrast, `plusplus` works with all built-in and user-defined types.
 
 ### Caveats
 
@@ -195,6 +204,15 @@ enable_increments(__name__)
 ```
 
 This enables increments in the submodules, but not in the `package/__init__.py` code itself.
+
+Other ideas
+-----------
+
+The same approach could be used to implement
+the [assignment expressions](https://docs.python.org/3/whatsnew/3.8.html#assignment-expressions)
+for the Python versions that don't support them.
+For example, we could replace the `x <-- value` expressions (two unary minuses + one comparison)
+with actual assignments (setting `x` to `value`).
 
 See also
 --------
