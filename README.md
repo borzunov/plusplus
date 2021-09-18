@@ -5,7 +5,7 @@ plusplus
 [![CI status](https://img.shields.io/github/workflow/status/borzunov/plusplus/Tests)](https://github.com/borzunov/plusplus/actions)
 ![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus?token=SCAU424JFE)
 
-Enable `++x` and `--x` expressions in Python
+Enables increment operators in Python with a bytecode hack
 
 What's this?
 ------------
@@ -25,7 +25,7 @@ some_dict = {'key': 42}
 assert some_dict['key'] == 43
 ```
 
-Unlike `x += 1`, `++x` is still an expression, so the increments work fine inside other expressions,
+Unlike the `x += 1` statement, `++x` remains to be an _expression_, so it works fine inside other expressions,
 `if`/`while` conditions, lambda functions, and list/dict comprehensions:
 
 ```python
