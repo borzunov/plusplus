@@ -20,9 +20,9 @@ This module turns the `++x`-like expressions into `x += 1` at the bytecode level
 Increments and decrements of collection items and object attributes are supported as well, for example:
 
 ```python
-dictionary = {'key': 42}
-++dictionary['key']
-assert dictionary['key'] == 43
+some_dict = {'key': 42}
+++some_dict['key']
+assert some_dict['key'] == 43
 ```
 
 Unlike `x += 1`, `++x` is still an expression, so the increments work fine inside other expressions,
@@ -47,19 +47,15 @@ See [tests](tests/test_plusplus.py) for more sophisticated examples.
 Why?
 ----
 
-This module is made for fun, as a demonstration of Python flexibility and bytecode manipulation techniques.
-Note that enabling increments in real projects may be risky: such code may confuse new developers and
-behave differently if copied to environments without the `plusplus` module. Also, this feature gives more opportunities
-to write unreadable code in general.
+I don't claim that allowing increments is good for real projects: such code may become less readable,
+confuse new developers, and behave differently if copied to environments without this module.
+I've made this module for fun, as a demonstration of Python flexibility and bytecode manipulation techniques.
 
-Nevertheless, there are situations where increments (if used with care) may allow to avoid repetitions or
-make code more readable. Some of them are listed [here](docs/stdlib_examples.md) with the examples from
-the source code of the Python standard library.
-
+However, some situations where increments simplify code do exist
+(see [examples](docs/stdlib_examples.md) from the Python's standard library).
 Also, having the increment expressions seems consistent with
 [PEP 572 "Assignment Expressions"](https://www.python.org/dev/peps/pep-0572/)
 that introduced the `x := value` expressions in Python 3.8+.
-They can be used inside `if`/`while` conditions and lambda functions as well.
 
 How it works?
 -------------

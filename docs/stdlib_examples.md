@@ -1,7 +1,7 @@
 # Situations where increments may be useful
 
 This list shows situations where increments (if used with care) may allow to avoid repetitions or
-make code more readable. Each situation is demonstrated by an example of the code from the Python standard
+make code more readable. Each situation is demonstrated by an example of the code from the Python's standard
 library to ensure that this situation is realistic (this approach is inspired by
 the ["Importance of real code"](https://www.python.org/dev/peps/pep-0572/#the-importance-of-real-code) section of
 PEP 572 "Assignment Expressions"). Only one example is shown for clarity, however the standard
