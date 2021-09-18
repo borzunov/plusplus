@@ -35,6 +35,7 @@ if --connection.num_users == 0:
     connection.close()
 
 button.add_click_callback(lambda: ++counter)
+# No need for the `global counter` statement inside lambda
 
 index = 0
 indexed_cells = {++index: cell for row in table for cell in row}
@@ -132,7 +133,7 @@ to [sys.meta_path](https://docs.python.org/3/library/sys.html#sys.meta_path).
 
 [[Source code](src/plusplus/wrappers.py#L27)]
 
-### Why not just override unary plus operator?
+### Why not just override the unary plus operator?
 
 - This way, it would be impossible to distinguish applying two unary operators consequently (like `++x`) from
     applying them in separate places of a program (like in the snippet below).
@@ -147,7 +148,12 @@ to [sys.meta_path](https://docs.python.org/3/library/sys.html#sys.meta_path).
     (such as [`__pos__()`](https://docs.python.org/3/reference/datamodel.html#object.__pos__) and
     [`__neg__()`](https://docs.python.org/3/reference/datamodel.html#object.__neg__))
     do not work for built-in Python types like `int`, `float`, etc.
-    In contrast, `plusplus` works with all built-in and user-defined types.
+    unless you use other hacks like in [forbiddenfruit](https://github.com/clarete/forbiddenfruit) or
+    [dontasq](https://github.com/borzunov/dontasq#adding-methods-to-built-ins).
+    Using more hacks complicates porting this module to other Python versions and interpreters.
+
+- You would need to override these methods for each built-in/numpy/user-defined number type.
+    In contrast, `plusplus` works for all types automatically.
 
 ### Caveats
 
