@@ -2,7 +2,6 @@ plusplus
 ========
 
 [![PyPI version](https://img.shields.io/pypi/v/plusplus.svg?color=blue)](https://pypi.org/project/plusplus/)
-[![CI status](https://img.shields.io/github/workflow/status/borzunov/plusplus/Tests)](https://github.com/borzunov/plusplus/actions)
 ![Codecov](https://img.shields.io/codecov/c/github/borzunov/plusplus?token=SCAU424JFE)
 
 Enables increment operators in Python with a bytecode hack
